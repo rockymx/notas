@@ -23,9 +23,9 @@ COPY . .
 # Compilar el frontend (JS y CSS) y guardarlo en la carpeta 'dist'
 RUN esbuild index.js --bundle --minify --format=esm --outfile=dist/bundle.js --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment
 
-# --- LÍNEA AÑADIDA ---
-# Copiar el archivo index.html a la carpeta 'dist' para que sea incrustado.
-RUN cp ui/index.html dist/index.html
+# --- CORRECCIÓN FINAL ---
+# Copiar el archivo index.html (desde la raíz) a la carpeta 'dist' para que sea incrustado.
+RUN cp index.html dist/index.html
 
 # Compilar el backend de Go, incrustando la carpeta 'dist' completa
 RUN CGO_ENABLED=1 CC=$([ "$TARGETARCH" = "arm64" ] && echo "aarch64-linux-gnu-gcc" || echo "gcc") GOOS=$TARGETOS GOARCH=$TARGETARCH go build --tags "fts5" -v -o ./zen .
