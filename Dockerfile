@@ -20,11 +20,14 @@ RUN go mod download && go mod verify
 # Copiar todo el código fuente
 COPY . .
 
-# --- LÍNEA CORREGIDA FINAL ---
-# Se eliminó el flag --css-outfile que ya no es válido en versiones recientes de esbuild.
+# Compilar el frontend (JS y CSS) y guardarlo en la carpeta 'dist'
 RUN esbuild index.js --bundle --minify --format=esm --outfile=dist/bundle.js --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment
 
-# Compilar el backend de Go, incrustando la carpeta 'dist'
+# --- LÍNEA AÑADIDA ---
+# Copiar el archivo index.html a la carpeta 'dist' para que sea incrustado.
+RUN cp ui/index.html dist/index.html
+
+# Compilar el backend de Go, incrustando la carpeta 'dist' completa
 RUN CGO_ENABLED=1 CC=$([ "$TARGETARCH" = "arm64" ] && echo "aarch64-linux-gnu-gcc" || echo "gcc") GOOS=$TARGETOS GOARCH=$TARGETARCH go build --tags "fts5" -v -o ./zen .
 
 # Etapa 2: Imagen Final
