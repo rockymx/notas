@@ -20,10 +20,9 @@ RUN go mod download && go mod verify
 # Copiar todo el código fuente
 COPY . .
 
-# --- LÍNEA CORREGIDA ---
-# Compilar el frontend (JS y CSS) y guardarlo en la carpeta 'dist'
-# El comando original guardaba en 'assets', causando el error.
-RUN esbuild index.js --bundle --minify --format=esm --outfile=dist/bundle.js --css-outfile=dist/bundle.css --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment
+# --- LÍNEA CORREGIDA FINAL ---
+# Se eliminó el flag --css-outfile que ya no es válido en versiones recientes de esbuild.
+RUN esbuild index.js --bundle --minify --format=esm --outfile=dist/bundle.js --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment
 
 # Compilar el backend de Go, incrustando la carpeta 'dist'
 RUN CGO_ENABLED=1 CC=$([ "$TARGETARCH" = "arm64" ] && echo "aarch64-linux-gnu-gcc" || echo "gcc") GOOS=$TARGETOS GOARCH=$TARGETARCH go build --tags "fts5" -v -o ./zen .
