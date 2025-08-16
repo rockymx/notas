@@ -25,7 +25,7 @@ COPY . .
 RUN esbuild index.js --bundle --minify --format=esm --outfile=dist/bundle.js --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment
 
 # Crear el archivo index.html que falta en el repositorio directamente en la carpeta 'dist'.
-RUN echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Zen</title><link rel="stylesheet" href="/dist/bundle.css"></head><body><script type="module" src="/dist/bundle.js"></script></body></html>' > dist/index.html
+RUN echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Zen</title><link rel="stylesheet" href="/assets/bundle.css"></head><body><script type="module" src="/assets/bundle.js"></script></body></html>' > dist/index.html
 
 # Compilar el backend de Go, incrustando la carpeta 'dist' completa
 RUN CGO_ENABLED=1 CC=$([ "$TARGETARCH" = "arm64" ] && echo "aarch64-linux-gnu-gcc" || echo "gcc") GOOS=$TARGETOS GOARCH=$TARGETARCH go build --tags "fts5" -v -o ./zen .
