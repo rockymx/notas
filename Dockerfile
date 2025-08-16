@@ -1,3 +1,4 @@
+# Etapa 1: Builder
 FROM --platform=$BUILDPLATFORM golang:1.23.5-bookworm as builder
 
 # Argumentos para compilación multi-arquitectura
@@ -23,7 +24,6 @@ COPY . .
 # Compilar el frontend (JS y CSS) y guardarlo en la carpeta 'dist'
 RUN esbuild index.js --bundle --minify --format=esm --outfile=dist/bundle.js --loader:.js=jsx --jsx-factory=h --jsx-fragment=Fragment
 
-# --- CORRECCIÓN DEFINITIVA ---
 # Crear el archivo index.html que falta en el repositorio directamente en la carpeta 'dist'.
 RUN echo '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Zen</title><link rel="stylesheet" href="/dist/bundle.css"></head><body><script type="module" src="/dist/bundle.js"></script></body></html>' > dist/index.html
 
@@ -43,6 +43,9 @@ VOLUME /images
 # Definir variables de entorno para las carpetas de datos
 ENV DATA_FOLDER=/data
 ENV IMAGES_FOLDER=/images
+
+# Exponer el puerto en el que la aplicación escucha (NUEVA LÍNEA)
+EXPOSE 8080
 
 # Comando para ejecutar la aplicación
 CMD ["/zen"]
